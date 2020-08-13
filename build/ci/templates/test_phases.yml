@@ -391,10 +391,10 @@ steps:
   # This task only runs if the string 'testFunctional' exists in variable `TestsToRun`.
   #
   # Example command line (windows pwsh):
-  # > npm run test:functional
-  - script: |
-      npm run test:functional
-    displayName: 'Run functional tests'
+  # > python build/ci/python/run_functional_tests.py
+  - bash: |
+      python build/ci/python/run_functional_tests.py
+    displayName: 'Run functional tests using Python'
     condition: and(succeeded(), contains(variables['TestsToRun'], 'testFunctional'))
     env:
       DISPLAY: :10
@@ -404,7 +404,7 @@ steps:
     displayName: 'Publish functional tests results'
     condition: contains(variables['TestsToRun'], 'testFunctional')
     inputs:
-      testResultsFiles: '$(MOCHA_FILE)'
+      testResultsFiles: '$(Build.ArtifactStagingDirectory)/test-junit*.xml'
       testRunTitle: 'functional-$(Agent.Os)-Py$(pythonVersion)'
       buildPlatform: '$(Agent.Os)-Py$(pythonVersion)'
       buildConfiguration: 'FunctionalTests'
