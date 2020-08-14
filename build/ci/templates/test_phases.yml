@@ -391,10 +391,10 @@ steps:
   # This task only runs if the string 'testFunctional' exists in variable `TestsToRun`.
   #
   # Example command line (windows pwsh):
-  # > python build/ci/python/run_functional_tests.py
+  # > node build/ci/scripts/runFunctionalTests.js
   - bash: |
-      python build/ci/python/run_functional_tests.py
-    displayName: 'Run functional tests using Python'
+      node build/ci/scripts/runFunctionalTests.js
+    displayName: 'Run functional tests using Node'
     condition: and(succeeded(), contains(variables['TestsToRun'], 'testFunctional'))
     env:
       DISPLAY: :10

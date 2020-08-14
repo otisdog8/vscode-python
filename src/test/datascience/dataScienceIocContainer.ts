@@ -118,7 +118,7 @@ import {
 import { ProductService } from '../../client/common/installer/productService';
 import { IInstallationChannelManager, IProductPathService, IProductService } from '../../client/common/installer/types';
 import { InterpreterPathService } from '../../client/common/interpreterPathService';
-import { traceInfo } from '../../client/common/logger';
+import { traceError, traceInfo } from '../../client/common/logger';
 import { BrowserService } from '../../client/common/net/browser';
 import { HttpClient } from '../../client/common/net/httpClient';
 import { IS_WINDOWS } from '../../client/common/platform/constants';
@@ -1545,6 +1545,7 @@ export class DataScienceIocContainer extends UnitTestIocContainer {
                 return pythonProcess.isModuleInstalled('livelossplot'); // Should we check all dependencies?
             }
         } catch (ex) {
+            traceError(`Exception attempting dependency list for ${interpreter.path}: `, ex);
             return false;
         }
     }
