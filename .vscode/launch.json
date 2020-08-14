@@ -3,6 +3,15 @@
     "version": "0.1.0",
     "configurations": [
         {
+            "name": "Node: Current File",
+            "program": "${file}",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "justMyCode": true,
