@@ -1530,6 +1530,7 @@ export class DataScienceIocContainer extends UnitTestIocContainer {
 
     private async hasFunctionalDependencies(interpreter: PythonInterpreter): Promise<boolean | undefined> {
         try {
+            traceInfo(`Checking ${interpreter.path} for functional dependencies ...`);
             const dependencyChecker = this.serviceManager.get<JupyterInterpreterDependencyService>(
                 JupyterInterpreterDependencyService
             );

@@ -34,35 +34,40 @@ async function main() {
     var returnCode = 0;
 
     // Go through each one at a time
-    for (var index = 0; index < files.length; index += 1) {
-        // Each run with a file will expect a $MOCHA_FILE$ variable. Generate one for each
-        // Note: this index is used as a pattern when setting mocha file in the test_phases.yml
-        var subMochaFile = `${mochaBaseFile}${index}${mochaFileExt}`;
-        process.env['MOCHA_FILE'] = subMochaFile;
-        var exitCode = await new Promise((resolve) => {
-            // Spawn the sub node process
-            var proc = child_process.fork('./node_modules/mocha/bin/_mocha', [
-                files[index],
-                '--require=out/test/unittests.js',
-                '--exclude=out/**/*.jsx',
-                '--reporter=mocha-multi-reporters',
-                '--reporter-option=configFile=build/.mocha-multi-reporters.config',
-                '--ui=tdd',
-                '--recursive',
-                '--grep',
-                'Simple text',
-                '--colors',
-                '--exit',
-                '--timeout=180000'
-            ]);
-            proc.on('exit', resolve);
-        });
+    try {
+        for (var index = 0; index < files.length; index += 1) {
+            // Each run with a file will expect a $MOCHA_FILE$ variable. Generate one for each
+            // Note: this index is used as a pattern when setting mocha file in the test_phases.yml
+            var subMochaFile = `${mochaBaseFile}${index}${mochaFileExt}`;
+            process.env['MOCHA_FILE'] = subMochaFile;
+            var exitCode = await new Promise((resolve) => {
+                // Spawn the sub node process
+                var proc = child_process.fork('./node_modules/mocha/bin/_mocha', [
+                    files[index],
+                    '--require=out/test/unittests.js',
+                    '--exclude=out/**/*.jsx',
+                    '--reporter=mocha-multi-reporters',
+                    '--reporter-option=configFile=build/.mocha-multi-reporters.config',
+                    '--ui=tdd',
+                    '--recursive',
+                    '--grep',
+                    'Simple text',
+                    '--colors',
+                    '--exit',
+                    '--timeout=180000'
+                ]);
+                proc.on('exit', resolve);
+            });
 
-        // If failed keep track
-        if (exitCode !== 0) {
-            console.log(`Functional tests for ${f} failed.`);
-            returnCode = exitCode;
+            // If failed keep track
+            if (exitCode !== 0) {
+                console.log(`Functional tests for ${files[index]} failed.`);
+                returnCode = exitCode;
+            }
         }
+    } catch (ex) {
+        console.log(`Functional tests run failure: ${ex}.`);
+        returnCode = -1;
     }
 
     // Reset the mocha file variable
