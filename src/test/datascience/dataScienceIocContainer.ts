@@ -1547,7 +1547,7 @@ export class DataScienceIocContainer extends UnitTestIocContainer {
                 traceInfo(`${interpreter.path} has jupyter with livelossplot indicating : ${result}`);
                 return result;
             } else {
-                traceInfo(`${interpreter.path} is missing jupyter.`);
+                traceInfo(`${JSON.stringify(interpreter)} is missing jupyter.`);
             }
         } catch (ex) {
             traceError(`Exception attempting dependency list for ${interpreter.path}: `, ex);
