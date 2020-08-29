@@ -8,7 +8,12 @@ import { isTestExecution } from './common/constants';
 import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
 import { IDataViewerDataProvider, IDataViewerFactory } from './datascience/data-viewing/types';
-import { IJupyterUriProvider, IJupyterUriProviderRegistration } from './datascience/types';
+import {
+    IJupyterExecutionLogger,
+    IJupyterExecutionLoggerRegistration,
+    IJupyterUriProvider,
+    IJupyterUriProviderRegistration
+} from './datascience/types';
 import { getDebugpyLauncherArgs, getDebugpyPackagePath } from './debugger/extension/adapter/remoteLaunchers';
 import { IInterpreterService } from './interpreter/contracts';
 import { IServiceContainer, IServiceManager } from './ioc/types';
@@ -88,6 +93,7 @@ export interface IExtensionApi {
          * @param serverProvider object called back when picking jupyter server URI
          */
         registerRemoteServerProvider(serverProvider: IJupyterUriProvider): void;
+        registerExecutionLogger(logger: IJupyterExecutionLogger): void;
     };
 }
 
@@ -139,6 +145,12 @@ export function buildApi(
                     IJupyterUriProviderRegistration
                 );
                 container.registerProvider(picker);
+            },
+            registerExecutionLogger(logger: IJupyterExecutionLogger) {
+                const container = serviceContainer.get<IJupyterExecutionLoggerRegistration>(
+                    IJupyterExecutionLoggerRegistration
+                );
+                container.registerLogger(logger);
             }
         }
     };

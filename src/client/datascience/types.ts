@@ -1327,6 +1327,27 @@ export interface IJupyterDebugService extends IDebugService {
     stop(): void;
 }
 
+export enum JupyterExecutionLoggerMessages {
+    notebookOpened,
+    cellExecuted,
+    kernelRestarted
+}
+
+export interface IJupyterExecutionLogger {
+    readonly id: string;
+    postOpenNotebook(): void;
+    postExecute(cell: ICell): void;
+    postKernelRestart(): void;
+}
+
+export const IJupyterExecutionLoggerRegistration = Symbol('IJupyterExecutionLoggerRegistration');
+
+export interface IJupyterExecutionLoggerRegistration {
+    getLoggers(): Promise<ReadonlyArray<IJupyterExecutionLogger>>;
+    registerLogger(logger: IJupyterExecutionLogger): void;
+    postMessage(message: JupyterExecutionLoggerMessages, code?: string): void;
+}
+
 export interface IJupyterServerUri {
     baseUrl: string;
     token: string;

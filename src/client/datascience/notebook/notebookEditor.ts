@@ -3,6 +3,7 @@
 
 'use strict';
 
+import { inject } from 'inversify';
 import { CellKind, ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
 import type { NotebookDocument } from 'vscode-proposed';
 import { IApplicationShell, ICommandManager, IVSCodeNotebook } from '../../common/application/types';
@@ -15,12 +16,14 @@ import { Telemetry } from '../constants';
 import { JupyterKernelPromiseFailedError } from '../jupyter/kernels/jupyterKernelPromiseFailedError';
 import { IKernel, IKernelProvider } from '../jupyter/kernels/types';
 import {
+    IJupyterExecutionLoggerRegistration,
     INotebook,
     INotebookEditor,
     INotebookModel,
     INotebookProvider,
     InterruptResult,
-    IStatusProvider
+    IStatusProvider,
+    JupyterExecutionLoggerMessages
 } from '../types';
 import { getDefaultCodeLanguage } from './helpers/helpers';
 
@@ -79,7 +82,9 @@ export class NotebookEditor implements INotebookEditor {
         private readonly statusProvider: IStatusProvider,
         private readonly applicationShell: IApplicationShell,
         private readonly configurationService: IConfigurationService,
-        disposables: IDisposableRegistry
+        disposables: IDisposableRegistry,
+        @inject(IJupyterExecutionLoggerRegistration)
+        private executionLoggers: IJupyterExecutionLoggerRegistration
     ) {
         disposables.push(model.onDidEdit(() => this._modified.fire(this)));
         disposables.push(
@@ -90,6 +95,7 @@ export class NotebookEditor implements INotebookEditor {
             })
         );
         disposables.push(model.onDidDispose(this._closed.fire.bind(this._closed, this)));
+        this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.notebookOpened);
     }
     public async load(_storage: INotebookModel, _webViewPanel?: WebviewPanel): Promise<void> {
         // Not used.
@@ -155,6 +161,7 @@ export class NotebookEditor implements INotebookEditor {
     public notifyExecution(code: string) {
         this._executed.fire(this);
         this.executedCode.fire(code);
+        this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.cellExecuted, code);
     }
     public async interruptKernel(): Promise<void> {
         if (this.restartingKernel) {
@@ -230,6 +237,7 @@ export class NotebookEditor implements INotebookEditor {
             this.document.metadata.cellRunnable = false;
             this.document.metadata.runnable = false;
             await kernel.restart();
+            this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.kernelRestarted);
         } catch (exc) {
             // If we get a kernel promise failure, then restarting timed out. Just shutdown and restart the entire server.
             // Note, this code might not be necessary, as such an error is thrown only when interrupting a kernel times out.
