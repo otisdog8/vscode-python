@@ -3,7 +3,6 @@
 
 'use strict';
 
-import { inject } from 'inversify';
 import { CellKind, ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
 import type { NotebookDocument } from 'vscode-proposed';
 import { IApplicationShell, ICommandManager, IVSCodeNotebook } from '../../common/application/types';
@@ -83,8 +82,7 @@ export class NotebookEditor implements INotebookEditor {
         private readonly applicationShell: IApplicationShell,
         private readonly configurationService: IConfigurationService,
         disposables: IDisposableRegistry,
-        @inject(IJupyterExecutionLoggerRegistration)
-        private executionLoggers: IJupyterExecutionLoggerRegistration
+        private readonly executionLoggers: IJupyterExecutionLoggerRegistration
     ) {
         disposables.push(model.onDidEdit(() => this._modified.fire(this)));
         disposables.push(
