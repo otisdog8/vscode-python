@@ -1327,6 +1327,14 @@ export interface IJupyterDebugService extends IDebugService {
     stop(): void;
 }
 
+export interface IPublicCellInfo {
+    id: string;
+    source: string;
+    executionCount: number;
+    executionEventId: string;
+    hasError: boolean;
+}
+
 export enum JupyterExecutionLoggerMessages {
     notebookOpened,
     cellExecuted,

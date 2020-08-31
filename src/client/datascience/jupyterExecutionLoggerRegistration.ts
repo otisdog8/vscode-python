@@ -3,7 +3,13 @@
 import { inject, injectable } from 'inversify';
 import * as uuid from 'uuid/v4';
 import { IExtensions } from '../common/types';
-import { IJupyterExecutionLogger, IJupyterExecutionLoggerRegistration, JupyterExecutionLoggerMessages } from './types';
+import {
+    CellState,
+    ICell,
+    IJupyterExecutionLogger,
+    IJupyterExecutionLoggerRegistration,
+    JupyterExecutionLoggerMessages
+} from './types';
 
 @injectable()
 export class JupyterExecutionLoggerRegistration implements IJupyterExecutionLoggerRegistration {
@@ -35,12 +41,18 @@ export class JupyterExecutionLoggerRegistration implements IJupyterExecutionLogg
                 case JupyterExecutionLoggerMessages.cellExecuted:
                     if (code) {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const cell: any = {
-                            text: code,
-                            executionCount: 0, // might need this
-                            executionEventId: uuid(),
-                            persistentId: uuid(), // might need this
-                            hasError: false // might need this
+                        const cell: ICell = {
+                            data: {
+                                cell_type: 'code',
+                                source: code,
+                                metadata: {},
+                                outputs: [],
+                                execution_count: 0 // might need this
+                            },
+                            id: uuid(),
+                            file: '',
+                            line: 0,
+                            state: CellState.finished // might need this
                         };
                         logger.postExecute(cell);
                     }

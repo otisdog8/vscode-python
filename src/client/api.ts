@@ -3,7 +3,7 @@
 
 'use strict';
 
-import { Event, Uri } from 'vscode';
+import { Event, EventEmitter, Uri } from 'vscode';
 import { isTestExecution } from './common/constants';
 import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
@@ -12,7 +12,8 @@ import {
     IJupyterExecutionLogger,
     IJupyterExecutionLoggerRegistration,
     IJupyterUriProvider,
-    IJupyterUriProviderRegistration
+    IJupyterUriProviderRegistration,
+    IPublicCellInfo
 } from './datascience/types';
 import { getDebugpyLauncherArgs, getDebugpyPackagePath } from './debugger/extension/adapter/remoteLaunchers';
 import { IInterpreterService } from './interpreter/contracts';
@@ -80,6 +81,7 @@ export interface IExtensionApi {
              */
             execCommand: string[] | undefined;
         };
+        readonly onKernelActivity: Event<IPublicCellInfo | string>;
     };
     datascience: {
         /**
@@ -133,7 +135,8 @@ export function buildApi(
                 const pythonPath = configurationService.getSettings(resource).pythonPath;
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
-            }
+            },
+            onKernelActivity: new EventEmitter<string>().event
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {
