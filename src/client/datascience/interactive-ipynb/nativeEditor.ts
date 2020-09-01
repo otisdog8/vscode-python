@@ -93,6 +93,9 @@ export class NativeEditor extends InteractiveBase implements INotebookEditor {
     public get onDidChangeViewState(): Event<void> {
         return this._onDidChangeViewState.event;
     }
+    public get onKernelActivity(): Event<string> {
+        return new EventEmitter<string>().event;
+    }
 
     public get visible(): boolean {
         return this.viewState.visible;
