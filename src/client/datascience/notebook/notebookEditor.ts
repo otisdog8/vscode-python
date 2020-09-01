@@ -3,8 +3,9 @@
 
 'use strict';
 
+import { uuid } from '@jupyter-widgets/base';
 import { CellKind, ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
-import type { NotebookDocument } from 'vscode-proposed';
+import type { NotebookCell, NotebookDocument } from 'vscode-proposed';
 import { IApplicationShell, ICommandManager, IVSCodeNotebook } from '../../common/application/types';
 import { traceError } from '../../common/logger';
 import { IConfigurationService, IDisposableRegistry } from '../../common/types';
@@ -21,6 +22,7 @@ import {
     INotebookModel,
     INotebookProvider,
     InterruptResult,
+    IPublicCellInfo,
     IStatusProvider,
     JupyterExecutionLoggerMessages
 } from '../types';
@@ -62,6 +64,9 @@ export class NotebookEditor implements INotebookEditor {
     public get onExecutedCode(): Event<string> {
         return this.executedCode.event;
     }
+    public get onKernelActivity(): Event<IPublicCellInfo | string> {
+        return this.kernelChange.event;
+    }
     public notebook?: INotebook | undefined;
 
     private changedViewState = new EventEmitter<void>();
@@ -70,6 +75,7 @@ export class NotebookEditor implements INotebookEditor {
     private _executed = new EventEmitter<INotebookEditor>();
     private _modified = new EventEmitter<INotebookEditor>();
     private executedCode = new EventEmitter<string>();
+    private kernelChange = new EventEmitter<IPublicCellInfo | string>();
     private restartingKernel?: boolean;
     constructor(
         public readonly model: INotebookModel,
@@ -94,6 +100,7 @@ export class NotebookEditor implements INotebookEditor {
         );
         disposables.push(model.onDidDispose(this._closed.fire.bind(this._closed, this)));
         this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.notebookOpened);
+        this.kernelChange.fire('notebookOpened');
     }
     public async load(_storage: INotebookModel, _webViewPanel?: WebviewPanel): Promise<void> {
         // Not used.
@@ -156,10 +163,18 @@ export class NotebookEditor implements INotebookEditor {
             cell.metadata.outputCollapsed = true;
         });
     }
-    public notifyExecution(code: string) {
+    public notifyExecution(cell: NotebookCell) {
         this._executed.fire(this);
-        this.executedCode.fire(code);
-        this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.cellExecuted, code);
+        this.executedCode.fire(cell.document.getText());
+        this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.cellExecuted, cell.document.getText());
+        const cellMessage: IPublicCellInfo = {
+            id: cell.uri.toString(),
+            source: cell.document.getText(),
+            executionCount: cell.metadata.executionOrder!,
+            executionEventId: uuid(),
+            hasError: cell.metadata.statusMessage! === 'error'
+        };
+        this.kernelChange.fire(cellMessage);
     }
     public async interruptKernel(): Promise<void> {
         if (this.restartingKernel) {
@@ -236,6 +251,7 @@ export class NotebookEditor implements INotebookEditor {
             this.document.metadata.runnable = false;
             await kernel.restart();
             this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.kernelRestarted);
+            this.kernelChange.fire('kernelRestarted');
         } catch (exc) {
             // If we get a kernel promise failure, then restarting timed out. Just shutdown and restart the entire server.
             // Note, this code might not be necessary, as such an error is thrown only when interrupting a kernel times out.

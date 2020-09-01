@@ -3,7 +3,7 @@
 
 'use strict';
 
-import { Event, EventEmitter, Uri } from 'vscode';
+import { Event, Uri } from 'vscode';
 import { isTestExecution } from './common/constants';
 import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
@@ -13,6 +13,7 @@ import {
     IJupyterExecutionLoggerRegistration,
     IJupyterUriProvider,
     IJupyterUriProviderRegistration,
+    INotebookEditorProvider,
     IPublicCellInfo
 } from './datascience/types';
 import { getDebugpyLauncherArgs, getDebugpyPackagePath } from './debugger/extension/adapter/remoteLaunchers';
@@ -57,6 +58,7 @@ export interface IExtensionApi {
          * An event that is emitted when execution details (for a resource) change. For instance, when interpreter configuration changes.
          */
         readonly onDidChangeExecutionDetails: Event<Uri | undefined>;
+        readonly onKernelActivity: Event<IPublicCellInfo | string>;
         /**
          * Returns all the details the consumer needs to execute code within the selected environment,
          * corresponding to the specified resource taking into account any workspace-specific settings
@@ -81,7 +83,6 @@ export interface IExtensionApi {
              */
             execCommand: string[] | undefined;
         };
-        readonly onKernelActivity: Event<IPublicCellInfo | string>;
     };
     datascience: {
         /**
@@ -107,6 +108,8 @@ export function buildApi(
 ): IExtensionApi {
     const configurationService = serviceContainer.get<IConfigurationService>(IConfigurationService);
     const interpreterService = serviceContainer.get<IInterpreterService>(IInterpreterService);
+    const notebookEditorProvider = serviceContainer.get<INotebookEditorProvider>(INotebookEditorProvider);
+    const notebookEditor = notebookEditorProvider.activeEditor!;
     const api: IExtensionApi = {
         // 'ready' will propagate the exception, but we must log it here first.
         ready: ready.catch((ex) => {
@@ -136,7 +139,7 @@ export function buildApi(
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
-            onKernelActivity: new EventEmitter<string>().event
+            onKernelActivity: notebookEditor.onKernelActivity
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {
