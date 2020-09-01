@@ -106,7 +106,6 @@ import { OldJupyterVariables } from './jupyter/oldJupyterVariables';
 import { ServerPreload } from './jupyter/serverPreload';
 import { JupyterServerSelector } from './jupyter/serverSelector';
 import { JupyterDebugService } from './jupyterDebugService';
-import { JupyterExecutionLoggerRegistration } from './jupyterExecutionLoggerRegistration';
 import { JupyterUriProviderRegistration } from './jupyterUriProviderRegistration';
 import { KernelDaemonPool } from './kernel-launcher/kernelDaemonPool';
 import { KernelDaemonPreWarmer } from './kernel-launcher/kernelDaemonPreWarmer';
@@ -153,7 +152,6 @@ import {
     IJupyterDebugger,
     IJupyterDebugService,
     IJupyterExecution,
-    IJupyterExecutionLoggerRegistration,
     IJupyterInterpreterDependencyManager,
     IJupyterNotebookProvider,
     IJupyterPasswordConnect,
@@ -312,7 +310,6 @@ export function registerTypes(serviceManager: IServiceManager) {
     serviceManager.addSingleton<ExportUtil>(ExportUtil, ExportUtil);
     serviceManager.addSingleton<ExportCommands>(ExportCommands, ExportCommands);
     serviceManager.addSingleton<IExportManagerFilePicker>(IExportManagerFilePicker, ExportManagerFilePicker);
-    serviceManager.addSingleton<IJupyterExecutionLoggerRegistration>(IJupyterExecutionLoggerRegistration, JupyterExecutionLoggerRegistration);
     serviceManager.addSingleton<IJupyterUriProviderRegistration>(IJupyterUriProviderRegistration, JupyterUriProviderRegistration);
     serviceManager.addSingleton<IDigestStorage>(IDigestStorage, DigestStorage);
     serviceManager.addSingleton<ITrustService>(ITrustService, TrustService);

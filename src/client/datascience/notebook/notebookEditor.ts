@@ -16,15 +16,13 @@ import { Telemetry } from '../constants';
 import { JupyterKernelPromiseFailedError } from '../jupyter/kernels/jupyterKernelPromiseFailedError';
 import { IKernel, IKernelProvider } from '../jupyter/kernels/types';
 import {
-    IJupyterExecutionLoggerRegistration,
     INotebook,
     INotebookEditor,
     INotebookModel,
     INotebookProvider,
     InterruptResult,
     IPublicCellInfo,
-    IStatusProvider,
-    JupyterExecutionLoggerMessages
+    IStatusProvider
 } from '../types';
 import { getDefaultCodeLanguage } from './helpers/helpers';
 
@@ -87,8 +85,7 @@ export class NotebookEditor implements INotebookEditor {
         private readonly statusProvider: IStatusProvider,
         private readonly applicationShell: IApplicationShell,
         private readonly configurationService: IConfigurationService,
-        disposables: IDisposableRegistry,
-        private readonly executionLoggers: IJupyterExecutionLoggerRegistration
+        disposables: IDisposableRegistry
     ) {
         disposables.push(model.onDidEdit(() => this._modified.fire(this)));
         disposables.push(
@@ -99,7 +96,6 @@ export class NotebookEditor implements INotebookEditor {
             })
         );
         disposables.push(model.onDidDispose(this._closed.fire.bind(this._closed, this)));
-        this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.notebookOpened);
         this.kernelChange.fire('notebookOpened');
     }
     public async load(_storage: INotebookModel, _webViewPanel?: WebviewPanel): Promise<void> {
@@ -166,7 +162,6 @@ export class NotebookEditor implements INotebookEditor {
     public notifyExecution(cell: NotebookCell) {
         this._executed.fire(this);
         this.executedCode.fire(cell.document.getText());
-        this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.cellExecuted, cell.document.getText());
         const cellMessage: IPublicCellInfo = {
             id: cell.uri.toString(),
             source: cell.document.getText(),
@@ -250,7 +245,6 @@ export class NotebookEditor implements INotebookEditor {
             this.document.metadata.cellRunnable = false;
             this.document.metadata.runnable = false;
             await kernel.restart();
-            this.executionLoggers.postMessage(JupyterExecutionLoggerMessages.kernelRestarted);
             this.kernelChange.fire('kernelRestarted');
         } catch (exc) {
             // If we get a kernel promise failure, then restarting timed out. Just shutdown and restart the entire server.

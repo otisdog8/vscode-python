@@ -19,7 +19,6 @@ import { INotebookStorageProvider } from '../notebookStorage/notebookStorageProv
 import { VSCodeNotebookModel } from '../notebookStorage/vscNotebookModel';
 import {
     IDataScienceFileSystem,
-    IJupyterExecutionLoggerRegistration,
     INotebookEditor,
     INotebookEditorProvider,
     INotebookProvider,
@@ -69,9 +68,7 @@ export class NotebookEditorProvider implements INotebookEditorProvider {
         @inject(IApplicationShell) private readonly appShell: IApplicationShell,
         @inject(IStatusProvider) private readonly statusProvider: IStatusProvider,
         @inject(IServiceContainer) private readonly serviceContainer: IServiceContainer,
-        @inject(IDataScienceFileSystem) private readonly fs: IDataScienceFileSystem,
-        @inject(IJupyterExecutionLoggerRegistration)
-        private executionLoggers: IJupyterExecutionLoggerRegistration
+        @inject(IDataScienceFileSystem) private readonly fs: IDataScienceFileSystem
     ) {
         this.disposables.push(this.vscodeNotebook.onDidOpenNotebookDocument(this.onDidOpenNotebookDocument, this));
         this.disposables.push(this.vscodeNotebook.onDidCloseNotebookDocument(this.onDidCloseNotebookDocument, this));
@@ -165,8 +162,7 @@ export class NotebookEditorProvider implements INotebookEditorProvider {
                 this.statusProvider,
                 this.appShell,
                 this.configurationService,
-                this.disposables,
-                this.executionLoggers
+                this.disposables
             );
             this.onEditorOpened(editor);
         }
