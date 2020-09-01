@@ -9,10 +9,10 @@ import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
 import { IDataViewerDataProvider, IDataViewerFactory } from './datascience/data-viewing/types';
 import {
+    ICellExecutionInfo,
     IJupyterUriProvider,
     IJupyterUriProviderRegistration,
-    INotebookEditorProvider,
-    IPublicCellInfo
+    INotebookEditorProvider
 } from './datascience/types';
 import { getDebugpyLauncherArgs, getDebugpyPackagePath } from './debugger/extension/adapter/remoteLaunchers';
 import { IInterpreterService } from './interpreter/contracts';
@@ -56,7 +56,9 @@ export interface IExtensionApi {
          * An event that is emitted when execution details (for a resource) change. For instance, when interpreter configuration changes.
          */
         readonly onDidChangeExecutionDetails: Event<Uri | undefined>;
-        readonly onKernelActivity: Event<IPublicCellInfo | string>;
+        readonly onNotebookOpened: Event<void>;
+        readonly onKernelExecute: Event<ICellExecutionInfo>;
+        readonly onKernelRestart: Event<void>;
         /**
          * Returns all the details the consumer needs to execute code within the selected environment,
          * corresponding to the specified resource taking into account any workspace-specific settings
@@ -136,7 +138,11 @@ export function buildApi(
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
-            onKernelActivity: notebookEditor ? notebookEditor.onKernelActivity : new EventEmitter<string>().event
+            onNotebookOpened: notebookEditor ? notebookEditor.onNotebookOpened : new EventEmitter<void>().event,
+            onKernelExecute: notebookEditor
+                ? notebookEditor.onKernelExecute
+                : new EventEmitter<ICellExecutionInfo>().event,
+            onKernelRestart: notebookEditor ? notebookEditor.onKernelRestart : new EventEmitter<void>().event
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {

@@ -54,6 +54,7 @@ import {
 import {
     CellState,
     ICell,
+    ICellExecutionInfo,
     ICodeCssGenerator,
     IDataScienceErrorHandler,
     IDataScienceFileSystem,
@@ -93,8 +94,14 @@ export class NativeEditor extends InteractiveBase implements INotebookEditor {
     public get onDidChangeViewState(): Event<void> {
         return this._onDidChangeViewState.event;
     }
-    public get onKernelActivity(): Event<string> {
-        return new EventEmitter<string>().event;
+    public get onNotebookOpened(): Event<void> {
+        return new EventEmitter<void>().event;
+    }
+    public get onKernelExecute(): Event<ICellExecutionInfo> {
+        return new EventEmitter<ICellExecutionInfo>().event;
+    }
+    public get onKernelRestart(): Event<void> {
+        return new EventEmitter<void>().event;
     }
 
     public get visible(): boolean {

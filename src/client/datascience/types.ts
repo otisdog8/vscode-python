@@ -562,7 +562,9 @@ export interface INotebookEditor extends Disposable {
      */
     readonly type: 'old' | 'custom' | 'native';
     readonly onDidChangeViewState: Event<void>;
-    readonly onKernelActivity: Event<IPublicCellInfo | string>;
+    readonly onNotebookOpened: Event<void>;
+    readonly onKernelExecute: Event<ICellExecutionInfo>;
+    readonly onKernelRestart: Event<void>;
     readonly closed: Event<INotebookEditor>;
     readonly executed: Event<INotebookEditor>;
     readonly modified: Event<INotebookEditor>;
@@ -1328,7 +1330,7 @@ export interface IJupyterDebugService extends IDebugService {
     stop(): void;
 }
 
-export interface IPublicCellInfo {
+export interface ICellExecutionInfo {
     id: string;
     source: string;
     executionCount: number;
