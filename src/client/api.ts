@@ -3,7 +3,7 @@
 
 'use strict';
 
-import { Event, Uri } from 'vscode';
+import { Event, EventEmitter, Uri } from 'vscode';
 import { isTestExecution } from './common/constants';
 import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
@@ -106,7 +106,7 @@ export function buildApi(
     const configurationService = serviceContainer.get<IConfigurationService>(IConfigurationService);
     const interpreterService = serviceContainer.get<IInterpreterService>(IInterpreterService);
     const notebookEditorProvider = serviceContainer.get<INotebookEditorProvider>(INotebookEditorProvider);
-    const notebookEditor = notebookEditorProvider.activeEditor!;
+    const notebookEditor = notebookEditorProvider.activeEditor;
     const api: IExtensionApi = {
         // 'ready' will propagate the exception, but we must log it here first.
         ready: ready.catch((ex) => {
@@ -136,7 +136,7 @@ export function buildApi(
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
-            onKernelActivity: notebookEditor.onKernelActivity
+            onKernelActivity: notebookEditor ? notebookEditor.onKernelActivity : new EventEmitter<string>().event
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {

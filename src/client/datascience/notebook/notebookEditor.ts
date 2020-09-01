@@ -3,7 +3,7 @@
 
 'use strict';
 
-import { uuid } from '@jupyter-widgets/base';
+import * as uuid from 'uuid/v4';
 import { CellKind, ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
 import type { NotebookCell, NotebookDocument } from 'vscode-proposed';
 import { IApplicationShell, ICommandManager, IVSCodeNotebook } from '../../common/application/types';
