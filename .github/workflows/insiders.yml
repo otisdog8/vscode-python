@@ -23,6 +23,7 @@ jobs:
   build-vsix:
     name: Build VSIX
     runs-on: ubuntu-latest
+    if: github.repository == 'microsoft/vscode-python'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -63,6 +64,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    if: github.repository == 'microsoft/vscode-python'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -119,6 +121,7 @@ jobs:
     name: Tests
     # The value of runs-on is the OS of the current job (specified in the strategy matrix below) instead of being hardcoded.
     runs-on: ${{ matrix.os }}
+    if: github.repository == 'microsoft/vscode-python'
     strategy:
       fail-fast: false
       matrix:
@@ -171,7 +174,7 @@ jobs:
           python-version: ${{matrix.python}}
 
       - name: Use Node ${{env.NODE_VERSION}}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.1
         with:
           node-version: ${{env.NODE_VERSION}}
 
@@ -310,7 +313,7 @@ jobs:
         env:
           TEST_FILES_SUFFIX: testvirtualenvs
           CI_PYTHON_VERSION: ${{matrix.python}}
-        uses: GabrielBB/xvfb-action@v1.0
+        uses: GabrielBB/xvfb-action@v1.4
         with:
           run: npm run testSingleWorkspace
         if: matrix.test-suite == 'venv'
@@ -318,7 +321,7 @@ jobs:
       - name: Run single-workspace tests
         env:
           CI_PYTHON_VERSION: ${{matrix.python}}
-        uses: GabrielBB/xvfb-action@v1.0
+        uses: GabrielBB/xvfb-action@v1.4
         with:
           run: npm run testSingleWorkspace
         if: matrix.test-suite == 'single-workspace'
@@ -326,7 +329,7 @@ jobs:
       - name: Run multi-workspace tests
         env:
           CI_PYTHON_VERSION: ${{matrix.python}}
-        uses: GabrielBB/xvfb-action@v1.0
+        uses: GabrielBB/xvfb-action@v1.4
         with:
           run: npm run testMultiWorkspace
         if: matrix.test-suite == 'multi-workspace'
@@ -334,7 +337,7 @@ jobs:
       - name: Run debugger tests
         env:
           CI_PYTHON_VERSION: ${{matrix.python}}
-        uses: GabrielBB/xvfb-action@v1.0
+        uses: GabrielBB/xvfb-action@v1.4
         with:
           run: npm run testDebugger
         if: matrix.test-suite == 'debugger'
@@ -347,6 +350,7 @@ jobs:
     name: Smoke tests
     # The value of runs-on is the OS of the current job (specified in the strategy matrix below) instead of being hardcoded.
     runs-on: ${{ matrix.os }}
+    if: github.repository == 'microsoft/vscode-python'
     needs: [build-vsix]
     strategy:
       fail-fast: false
@@ -416,7 +420,7 @@ jobs:
       - name: Run smoke tests
         env:
           DISPLAY: 10
-        uses: GabrielBB/xvfb-action@v1.0
+        uses: GabrielBB/xvfb-action@v1.4
         with:
           run: node --no-force-async-hooks-checks ./out/test/smokeTest.js
 

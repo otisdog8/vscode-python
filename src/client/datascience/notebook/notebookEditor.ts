@@ -4,7 +4,7 @@
 'use strict';
 
 import * as uuid from 'uuid/v4';
-import { CellKind, ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
+import { ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
 import type { NotebookCell, NotebookDocument } from 'vscode-proposed';
 import { IApplicationShell, ICommandManager, IVSCodeNotebook } from '../../common/application/types';
 import { traceError } from '../../common/logger';
@@ -25,6 +25,8 @@ import {
     IStatusProvider
 } from '../types';
 import { getDefaultCodeLanguage } from './helpers/helpers';
+// tslint:disable-next-line: no-var-requires no-require-imports
+const vscodeNotebookEnums = require('vscode') as typeof import('vscode-proposed');
 
 export class NotebookEditor implements INotebookEditor {
     public readonly type = 'native';
@@ -135,7 +137,14 @@ export class NotebookEditor implements INotebookEditor {
         const defaultLanguage = getDefaultCodeLanguage(this.model);
         this.vscodeNotebook.activeNotebookEditor.edit((editor) => {
             const totalLength = this.document.cells.length;
-            editor.insert(this.document.cells.length, '', defaultLanguage, CellKind.Code, [], undefined);
+            editor.insert(
+                this.document.cells.length,
+                '',
+                defaultLanguage,
+                vscodeNotebookEnums.CellKind.Code,
+                [],
+                undefined
+            );
             for (let i = totalLength - 1; i >= 0; i = i - 1) {
                 editor.delete(i);
             }
@@ -239,11 +248,7 @@ export class NotebookEditor implements INotebookEditor {
         // Set our status
         const status = this.statusProvider.set(DataScience.restartingKernelStatus(), true, undefined, undefined);
 
-        // Disable running cells.
-        const [cellRunnable, runnable] = [this.document.metadata.cellRunnable, this.document.metadata.runnable];
         try {
-            this.document.metadata.cellRunnable = false;
-            this.document.metadata.runnable = false;
             await kernel.restart();
             this.kernelChange.fire('kernelRestarted');
         } catch (exc) {
@@ -268,8 +273,6 @@ export class NotebookEditor implements INotebookEditor {
         } finally {
             status.dispose();
             this.restartingKernel = false;
-            // Restore previous state.
-            [this.document.metadata.cellRunnable, this.document.metadata.runnable] = [cellRunnable, runnable];
         }
     }
     private async shouldAskForRestart(): Promise<boolean> {
