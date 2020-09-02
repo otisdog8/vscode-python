@@ -3,7 +3,6 @@
 
 'use strict';
 
-import * as uuid from 'uuid/v4';
 import { ConfigurationTarget, Event, EventEmitter, Uri, WebviewPanel } from 'vscode';
 import type { NotebookCell, NotebookDocument } from 'vscode-proposed';
 import { IApplicationShell, ICommandManager, IVSCodeNotebook } from '../../common/application/types';
@@ -16,7 +15,6 @@ import { Telemetry } from '../constants';
 import { JupyterKernelPromiseFailedError } from '../jupyter/kernels/jupyterKernelPromiseFailedError';
 import { IKernel, IKernelProvider } from '../jupyter/kernels/types';
 import {
-    ICellExecutionInfo,
     INotebook,
     INotebookEditor,
     INotebookModel,
@@ -67,7 +65,7 @@ export class NotebookEditor implements INotebookEditor {
     public get onNotebookOpened(): Event<void> {
         return this.notebookOpened.event;
     }
-    public get onKernelExecute(): Event<ICellExecutionInfo> {
+    public get onKernelExecute(): Event<NotebookCell> {
         return this.kernelExecute.event;
     }
     public get onKernelRestart(): Event<void> {
@@ -82,7 +80,7 @@ export class NotebookEditor implements INotebookEditor {
     private _modified = new EventEmitter<INotebookEditor>();
     private executedCode = new EventEmitter<string>();
     private notebookOpened = new EventEmitter<void>();
-    private kernelExecute = new EventEmitter<ICellExecutionInfo>();
+    private kernelExecute = new EventEmitter<NotebookCell>();
     private kernelRestart = new EventEmitter<void>();
     private restartingKernel?: boolean;
     constructor(
@@ -179,14 +177,7 @@ export class NotebookEditor implements INotebookEditor {
     public notifyExecution(cell: NotebookCell) {
         this._executed.fire(this);
         this.executedCode.fire(cell.document.getText());
-        const cellInfo: ICellExecutionInfo = {
-            id: cell.uri.toString(),
-            source: cell.document.getText(),
-            executionCount: cell.metadata.executionOrder!,
-            executionEventId: uuid(),
-            hasError: cell.metadata.statusMessage! === 'error'
-        };
-        this.kernelExecute.fire(cellInfo);
+        this.kernelExecute.fire(cell);
     }
     public async interruptKernel(): Promise<void> {
         if (this.restartingKernel) {

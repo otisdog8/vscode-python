@@ -12,6 +12,7 @@ import {
     ViewColumn,
     WebviewPanel
 } from 'vscode';
+import type { NotebookCell } from 'vscode-proposed';
 import '../../common/extensions';
 
 import * as uuid from 'uuid/v4';
@@ -54,7 +55,6 @@ import {
 import {
     CellState,
     ICell,
-    ICellExecutionInfo,
     ICodeCssGenerator,
     IDataScienceErrorHandler,
     IDataScienceFileSystem,
@@ -97,8 +97,8 @@ export class NativeEditor extends InteractiveBase implements INotebookEditor {
     public get onNotebookOpened(): Event<void> {
         return new EventEmitter<void>().event;
     }
-    public get onKernelExecute(): Event<ICellExecutionInfo> {
-        return new EventEmitter<ICellExecutionInfo>().event;
+    public get onKernelExecute(): Event<NotebookCell> {
+        return new EventEmitter<NotebookCell>().event;
     }
     public get onKernelRestart(): Event<void> {
         return new EventEmitter<void>().event;

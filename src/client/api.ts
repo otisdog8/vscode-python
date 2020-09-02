@@ -4,16 +4,12 @@
 'use strict';
 
 import { Event, EventEmitter, Uri } from 'vscode';
+import { NotebookCell } from 'vscode-proposed';
 import { isTestExecution } from './common/constants';
 import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
 import { IDataViewerDataProvider, IDataViewerFactory } from './datascience/data-viewing/types';
-import {
-    ICellExecutionInfo,
-    IJupyterUriProvider,
-    IJupyterUriProviderRegistration,
-    INotebookEditorProvider
-} from './datascience/types';
+import { IJupyterUriProvider, IJupyterUriProviderRegistration, INotebookEditorProvider } from './datascience/types';
 import { getDebugpyLauncherArgs, getDebugpyPackagePath } from './debugger/extension/adapter/remoteLaunchers';
 import { IInterpreterService } from './interpreter/contracts';
 import { IServiceContainer, IServiceManager } from './ioc/types';
@@ -57,7 +53,7 @@ export interface IExtensionApi {
          */
         readonly onDidChangeExecutionDetails: Event<Uri | undefined>;
         readonly onNotebookOpened: Event<void>;
-        readonly onKernelExecute: Event<ICellExecutionInfo>;
+        readonly onKernelExecute: Event<NotebookCell>;
         readonly onKernelRestart: Event<void>;
         /**
          * Returns all the details the consumer needs to execute code within the selected environment,
@@ -139,9 +135,7 @@ export function buildApi(
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
             onNotebookOpened: notebookEditor ? notebookEditor.onNotebookOpened : new EventEmitter<void>().event,
-            onKernelExecute: notebookEditor
-                ? notebookEditor.onKernelExecute
-                : new EventEmitter<ICellExecutionInfo>().event,
+            onKernelExecute: notebookEditor ? notebookEditor.onKernelExecute : new EventEmitter<NotebookCell>().event,
             onKernelRestart: notebookEditor ? notebookEditor.onKernelRestart : new EventEmitter<void>().event
         },
         datascience: {
