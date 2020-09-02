@@ -3,13 +3,13 @@
 
 'use strict';
 
-import { Event, EventEmitter, Uri } from 'vscode';
+import { Event, Uri } from 'vscode';
 import { NotebookCell } from 'vscode-proposed';
 import { isTestExecution } from './common/constants';
 import { traceError } from './common/logger';
 import { IConfigurationService, Resource } from './common/types';
 import { IDataViewerDataProvider, IDataViewerFactory } from './datascience/data-viewing/types';
-import { IJupyterUriProvider, IJupyterUriProviderRegistration, INotebookEditorProvider } from './datascience/types';
+import { IJupyterUriProvider, IJupyterUriProviderRegistration, INotebookExtensibility } from './datascience/types';
 import { getDebugpyLauncherArgs, getDebugpyPackagePath } from './debugger/extension/adapter/remoteLaunchers';
 import { IInterpreterService } from './interpreter/contracts';
 import { IServiceContainer, IServiceManager } from './ioc/types';
@@ -103,8 +103,7 @@ export function buildApi(
 ): IExtensionApi {
     const configurationService = serviceContainer.get<IConfigurationService>(IConfigurationService);
     const interpreterService = serviceContainer.get<IInterpreterService>(IInterpreterService);
-    const notebookEditorProvider = serviceContainer.get<INotebookEditorProvider>(INotebookEditorProvider);
-    const notebookEditor = notebookEditorProvider.activeEditor;
+    const notebookExtensibility = serviceContainer.get<INotebookExtensibility>(INotebookExtensibility);
     const api: IExtensionApi = {
         // 'ready' will propagate the exception, but we must log it here first.
         ready: ready.catch((ex) => {
@@ -134,15 +133,9 @@ export function buildApi(
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
-            onNotebookOpened: notebookEditor
-                ? notebookEditor.executionLogger.onNotebookOpened
-                : new EventEmitter<void>().event,
-            onKernelExecute: notebookEditor
-                ? notebookEditor.executionLogger.onKernelExecute
-                : new EventEmitter<NotebookCell>().event,
-            onKernelRestart: notebookEditor
-                ? notebookEditor.executionLogger.onKernelRestart
-                : new EventEmitter<void>().event
+            onNotebookOpened: notebookExtensibility.onNotebookOpened,
+            onKernelExecute: notebookExtensibility.onKernelExecute,
+            onKernelRestart: notebookExtensibility.onKernelRestart
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {

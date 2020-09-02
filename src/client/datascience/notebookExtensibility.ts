@@ -1,7 +1,10 @@
+import { injectable } from 'inversify';
 import { Event, EventEmitter } from 'vscode';
 import type { NotebookCell } from 'vscode-proposed';
+import { INotebookExtensibility } from './types';
 
-export class JupyterExecutionLogger {
+@injectable()
+export class NotebookExtensibility implements INotebookExtensibility {
     private notebookOpened = new EventEmitter<void>();
 
     private kernelExecute = new EventEmitter<NotebookCell>();

@@ -65,6 +65,7 @@ import {
     INotebookEditor,
     INotebookEditorProvider,
     INotebookExporter,
+    INotebookExtensibility,
     INotebookImporter,
     INotebookMetadataLive,
     INotebookModel,
@@ -87,15 +88,14 @@ import { IDataViewerFactory } from '../data-viewing/types';
 import { getCellHashProvider } from '../editor-integration/cellhashprovider';
 import { KernelSelector } from '../jupyter/kernels/kernelSelector';
 import { KernelConnectionMetadata } from '../jupyter/kernels/types';
-import { JupyterExecutionLogger } from '../jupyterExecutionLogger';
 
 const nativeEditorDir = path.join(EXTENSION_ROOT_DIR, 'out', 'datascience-ui', 'notebook');
 export class NativeEditor extends InteractiveBase implements INotebookEditor {
     public get onDidChangeViewState(): Event<void> {
         return this._onDidChangeViewState.event;
     }
-    public get executionLogger(): JupyterExecutionLogger {
-        return new JupyterExecutionLogger();
+    public get notebookExtensibility(): INotebookExtensibility {
+        return this.nbExtensibility;
     }
 
     public get visible(): boolean {
@@ -185,7 +185,8 @@ export class NativeEditor extends InteractiveBase implements INotebookEditor {
         expService: IExperimentService,
         private _model: INotebookModel,
         webviewPanel: WebviewPanel | undefined,
-        selector: KernelSelector
+        selector: KernelSelector,
+        private nbExtensibility: INotebookExtensibility
     ) {
         super(
             listeners,
