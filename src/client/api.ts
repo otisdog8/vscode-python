@@ -134,9 +134,15 @@ export function buildApi(
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
-            onNotebookOpened: notebookEditor ? notebookEditor.onNotebookOpened : new EventEmitter<void>().event,
-            onKernelExecute: notebookEditor ? notebookEditor.onKernelExecute : new EventEmitter<NotebookCell>().event,
-            onKernelRestart: notebookEditor ? notebookEditor.onKernelRestart : new EventEmitter<void>().event
+            onNotebookOpened: notebookEditor
+                ? notebookEditor.executionLogger.onNotebookOpened
+                : new EventEmitter<void>().event,
+            onKernelExecute: notebookEditor
+                ? notebookEditor.executionLogger.onKernelExecute
+                : new EventEmitter<NotebookCell>().event,
+            onKernelRestart: notebookEditor
+                ? notebookEditor.executionLogger.onKernelRestart
+                : new EventEmitter<void>().event
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {

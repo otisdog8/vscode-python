@@ -38,6 +38,7 @@ import { JupyterServerInfo } from './jupyter/jupyterConnection';
 import { JupyterInstallError } from './jupyter/jupyterInstallError';
 import { JupyterKernelSpec } from './jupyter/kernels/jupyterKernelSpec';
 import { KernelConnectionMetadata } from './jupyter/kernels/types';
+import { JupyterExecutionLogger } from './jupyterExecutionLogger';
 
 // tslint:disable-next-line:no-any
 export type PromiseFunction = (...any: any[]) => Promise<any>;
@@ -566,6 +567,7 @@ export interface INotebookEditor extends Disposable {
     readonly executed: Event<INotebookEditor>;
     readonly modified: Event<INotebookEditor>;
     readonly saved: Event<INotebookEditor>;
+    readonly executionLogger: JupyterExecutionLogger;
     /**
      * Is this notebook representing an untitled file which has never been saved yet.
      */
