@@ -105,7 +105,7 @@ export class NativeEditorOldWebView extends NativeEditor {
         model: INotebookModel,
         webviewPanel: WebviewPanel | undefined,
         selector: KernelSelector,
-        logger: INotebookExtensibility
+        notebookExtensibility: INotebookExtensibility
     ) {
         super(
             listeners,
@@ -141,7 +141,7 @@ export class NativeEditorOldWebView extends NativeEditor {
             model,
             webviewPanel,
             selector,
-            logger
+            notebookExtensibility
         );
         asyncRegistry.push(this);
         // No ui syncing in old notebooks.

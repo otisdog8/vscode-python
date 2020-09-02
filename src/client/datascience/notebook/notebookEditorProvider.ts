@@ -70,7 +70,7 @@ export class NotebookEditorProvider implements INotebookEditorProvider {
         @inject(IStatusProvider) private readonly statusProvider: IStatusProvider,
         @inject(IServiceContainer) private readonly serviceContainer: IServiceContainer,
         @inject(IDataScienceFileSystem) private readonly fs: IDataScienceFileSystem,
-        @inject(INotebookExtensibility) private readonly logger: INotebookExtensibility
+        @inject(INotebookExtensibility) private readonly notebookExtensibility: INotebookExtensibility
     ) {
         this.disposables.push(this.vscodeNotebook.onDidOpenNotebookDocument(this.onDidOpenNotebookDocument, this));
         this.disposables.push(this.vscodeNotebook.onDidCloseNotebookDocument(this.onDidCloseNotebookDocument, this));
@@ -165,7 +165,7 @@ export class NotebookEditorProvider implements INotebookEditorProvider {
                 this.appShell,
                 this.configurationService,
                 this.disposables,
-                this.logger
+                this.notebookExtensibility
             );
             this.onEditorOpened(editor);
         }
