@@ -861,18 +861,18 @@
                 "category": "Python"
             },
             {
-                "command": "python.datascience.newNotebook.removeallcells",
-                "title": "%python.command.python.datascience.newNotebook.removeallcells.title%",
+                "command": "python.datascience.notebookeditor.removeallcells",
+                "title": "%python.command.python.datascience.notebookeditor.removeallcells.title%",
                 "category": "Python"
             },
             {
-                "command": "python.datascience.newNotebook.expandallcells",
-                "title": "%python.command.python.datascience.newNotebook.expandallcells.title%",
+                "command": "python.datascience.notebookeditor.expandallcells",
+                "title": "%python.command.python.datascience.notebookeditor.expandallcells.title%",
                 "category": "Python"
             },
             {
-                "command": "python.datascience.newNotebook.collapseallcells",
-                "title": "%python.command.python.datascience.newNotebook.collapseallcells.title%",
+                "command": "python.datascience.notebookeditor.collapseallcells",
+                "title": "%python.command.python.datascience.notebookeditor.collapseallcells.title%",
                 "category": "Python"
             },
             {
@@ -1435,20 +1435,20 @@
                     "when": "python.datascience.isnativeactive && python.datascience.featureenabled && python.datascience.isnotebooktrusted"
                 },
                 {
-                    "command": "python.datascience.newNotebook.removeallcells",
-                    "title": "%python.command.python.datascience.newNotebook.removeallcells.title%",
+                    "command": "python.datascience.notebookeditor.removeallcells",
+                    "title": "%python.command.python.datascience.removeallcells.title%",
                     "category": "Python",
                     "when": "python.datascience.featureenabled && notebookEditorFocused"
                 },
                 {
-                    "command": "python.datascience.newNotebook.expandallcells",
-                    "title": "%python.command.python.datascience.newNotebook.expandallcells.title%",
+                    "command": "python.datascience.notebookeditor.expandallcells",
+                    "title": "%python.command.python.datascience.expandallcells.title%",
                     "category": "Python",
                     "when": "python.datascience.featureenabled && notebookEditorFocused"
                 },
                 {
-                    "command": "python.datascience.newNotebook.collapseallcells",
-                    "title": "%python.command.python.datascience.newNotebook.collapseallcells.title%",
+                    "command": "python.datascience.notebookeditor.collapseallcells",
+                    "title": "%python.command.python.datascience.collapseallcells.title%",
                     "category": "Python",
                     "when": "python.datascience.featureenabled && notebookEditorFocused"
                 },
@@ -2593,12 +2593,6 @@
                     "description": "Defines type of the language server.",
                     "scope": "window"
                 },
-                "python.analysis.openFilesOnly": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Only show errors and warnings for open files rather than for the entire workspace.",
-                    "scope": "resource"
-                },
                 "python.analysis.diagnosticPublishDelay": {
                     "type": "integer",
                     "default": 1000,
@@ -2661,12 +2655,6 @@
                     "description": "Allows code analysis to keep parser trees in memory. Increases memory consumption but may improve performance with large library analysis.",
                     "scope": "resource"
                 },
-                "python.analysis.memory.keepLibraryLocalVariables": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Allows code analysis to keep library function local variables. Allows code navigation in Python libraries function bodies. Increases memory consumption.",
-                    "scope": "resource"
-                },
                 "python.analysis.logLevel": {
                     "type": "string",
                     "enum": [
@@ -2683,18 +2671,6 @@
                     "type": "integer",
                     "default": 10,
                     "description": "Limits depth of the symbol tree in the document outline.",
-                    "scope": "resource"
-                },
-                "python.analysis.cachingLevel": {
-                    "type": "string",
-                    "enum": [
-                        "Default",
-                        "None",
-                        "System",
-                        "Library"
-                    ],
-                    "default": "Default",
-                    "description": "Defines which types of modules get their analysis cached.",
                     "scope": "resource"
                 },
                 "python.linting.enabled": {
@@ -3724,7 +3700,7 @@
         "node-html-parser": "^1.1.13",
         "nyc": "^15.0.0",
         "playwright-chromium": "^0.13.0",
-        "plotly.js-dist": "^1.54.5",
+        "plotly.js-dist": "^1.55.1",
         "postcss": "^7.0.27",
         "postcss-cssnext": "^3.1.0",
         "postcss-import": "^12.0.1",
