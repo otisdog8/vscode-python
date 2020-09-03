@@ -20,7 +20,6 @@ import { DownloadBetaChannelRule, DownloadDailyChannelRule } from './common/down
 import { LanguageServerDownloader } from './common/downloader';
 import { LanguageServerDownloadChannel } from './common/packageRepository';
 import { ExtensionSurveyPrompt } from './extensionSurvey';
-import { JediExtensionActivator } from './jedi';
 import { DotNetLanguageServerActivator } from './languageServer/activator';
 import { DotNetLanguageServerAnalysisOptions } from './languageServer/analysisOptions';
 import { DotNetLanguageClientFactory } from './languageServer/languageClientFactory';
@@ -77,12 +76,6 @@ export function registerTypes(serviceManager: IServiceManager, languageServerTyp
     serviceManager.addBinding(ILanguageServerCache, IExtensionActivationService);
     serviceManager.addSingleton<ILanguageServerExtension>(ILanguageServerExtension, LanguageServerExtension);
     serviceManager.add<IExtensionActivationManager>(IExtensionActivationManager, ExtensionActivationManager);
-
-    serviceManager.add<ILanguageServerActivator>(
-        ILanguageServerActivator,
-        JediExtensionActivator,
-        LanguageServerType.Jedi
-    );
 
     serviceManager.addSingleton<IPythonExtensionBanner>(
         IPythonExtensionBanner,

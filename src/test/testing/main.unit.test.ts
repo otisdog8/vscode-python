@@ -13,7 +13,6 @@ import { ExperimentsManager } from '../../client/common/experiments/manager';
 import { IDisposableRegistry, IExperimentsManager } from '../../client/common/types';
 import { ServiceContainer } from '../../client/ioc/container';
 import { IServiceContainer } from '../../client/ioc/types';
-import { JediSymbolProvider } from '../../client/providers/symbolProvider';
 import { UnitTestManagementService } from '../../client/testing/main';
 
 suite('Unit Tests - ManagementService', () => {
@@ -49,8 +48,6 @@ suite('Unit Tests - ManagementService', () => {
         test('Execute command if in experiment', async () => {
             when(experiment.inExperiment(AlwaysDisplayTestExplorerGroups.experiment)).thenReturn(true);
 
-            await testManagementService.activate(instance(mock(JediSymbolProvider)));
-
             verify(commandManager.executeCommand('setContext', 'testsDiscovered', true)).once();
             verify(experiment.inExperiment(AlwaysDisplayTestExplorerGroups.experiment)).once();
             verify(experiment.inExperiment(AlwaysDisplayTestExplorerGroups.control)).never();
@@ -58,8 +55,6 @@ suite('Unit Tests - ManagementService', () => {
         });
         test('If not in experiment, check and send Telemetry for control group and do not execute command', async () => {
             when(experiment.inExperiment(AlwaysDisplayTestExplorerGroups.experiment)).thenReturn(false);
-
-            await testManagementService.activate(instance(mock(JediSymbolProvider)));
 
             verify(commandManager.executeCommand('setContext', 'testsDiscovered', anything())).never();
             verify(experiment.inExperiment(AlwaysDisplayTestExplorerGroups.experiment)).once();
