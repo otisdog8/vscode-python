@@ -52,8 +52,6 @@ export interface IExtensionApi {
          * An event that is emitted when execution details (for a resource) change. For instance, when interpreter configuration changes.
          */
         readonly onDidChangeExecutionDetails: Event<Uri | undefined>;
-        readonly onKernelExecute: Event<NotebookCell>;
-        readonly onKernelRestart: Event<void>;
         /**
          * Returns all the details the consumer needs to execute code within the selected environment,
          * corresponding to the specified resource taking into account any workspace-specific settings
@@ -80,6 +78,8 @@ export interface IExtensionApi {
         };
     };
     datascience: {
+        readonly onKernelPostExecute: Event<NotebookCell>;
+        readonly onKernelRestart: Event<void>;
         /**
          * Launches Data Viewer component.
          * @param {IDataViewerDataProvider} dataProvider Instance that will be used by the Data Viewer component to fetch data.
@@ -131,9 +131,7 @@ export function buildApi(
                 const pythonPath = configurationService.getSettings(resource).pythonPath;
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
-            },
-            onKernelExecute: notebookExtensibility.onKernelPostExecute,
-            onKernelRestart: notebookExtensibility.onKernelRestart
+            }
         },
         datascience: {
             async showDataViewer(dataProvider: IDataViewerDataProvider, title: string): Promise<void> {
@@ -145,7 +143,9 @@ export function buildApi(
                     IJupyterUriProviderRegistration
                 );
                 container.registerProvider(picker);
-            }
+            },
+            onKernelPostExecute: notebookExtensibility.onKernelPostExecute,
+            onKernelRestart: notebookExtensibility.onKernelRestart
         }
     };
 
