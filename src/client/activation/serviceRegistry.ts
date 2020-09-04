@@ -20,6 +20,12 @@ import { DownloadBetaChannelRule, DownloadDailyChannelRule } from './common/down
 import { LanguageServerDownloader } from './common/downloader';
 import { LanguageServerDownloadChannel } from './common/packageRepository';
 import { ExtensionSurveyPrompt } from './extensionSurvey';
+import { JediLanguageServerActivator } from './jedi/activator';
+import { JediLanguageServerAnalysisOptions } from './jedi/analysisOptions';
+import { JediLanguageClientFactory } from './jedi/languageClientFactory';
+import { JediLanguageServerPackageService } from './jedi/languageServerPackageService';
+import { JediLanguageServerProxy } from './jedi/languageServerProxy';
+import { JediLanguageServerManager } from './jedi/manager';
 import { DotNetLanguageServerActivator } from './languageServer/activator';
 import { DotNetLanguageServerAnalysisOptions } from './languageServer/analysisOptions';
 import { DotNetLanguageClientFactory } from './languageServer/languageClientFactory';
@@ -172,6 +178,25 @@ export function registerTypes(serviceManager: IServiceManager, languageServerTyp
         serviceManager.addSingleton<ILanguageServerPackageService>(
             ILanguageServerPackageService,
             NodeLanguageServerPackageService
+        );
+    } else if (languageServerType === LanguageServerType.Jedi) {
+        serviceManager.add<ILanguageServerAnalysisOptions>(
+            ILanguageServerAnalysisOptions,
+            JediLanguageServerAnalysisOptions,
+            LanguageServerType.Node
+        );
+        serviceManager.add<ILanguageServerActivator>(
+            ILanguageServerActivator,
+            JediLanguageServerActivator,
+            LanguageServerType.Jedi
+        );
+
+        serviceManager.addSingleton<ILanguageClientFactory>(ILanguageClientFactory, JediLanguageClientFactory);
+        serviceManager.add<ILanguageServerManager>(ILanguageServerManager, JediLanguageServerManager);
+        serviceManager.add<ILanguageServerProxy>(ILanguageServerProxy, JediLanguageServerProxy);
+        serviceManager.addSingleton<ILanguageServerPackageService>(
+            ILanguageServerPackageService,
+            JediLanguageServerPackageService
         );
     } else if (languageServerType === LanguageServerType.None) {
         serviceManager.add<ILanguageServerActivator>(

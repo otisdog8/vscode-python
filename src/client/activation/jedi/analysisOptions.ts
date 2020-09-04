@@ -7,7 +7,7 @@ import { LanguageServerAnalysisOptionsBase } from '../common/analysisOptions';
 import { ILanguageServerOutputChannel } from '../types';
 
 @injectable()
-export class NodeLanguageServerAnalysisOptions extends LanguageServerAnalysisOptionsBase {
+export class JediLanguageServerAnalysisOptions extends LanguageServerAnalysisOptionsBase {
     constructor(
         @inject(IEnvironmentVariablesProvider) envVarsProvider: IEnvironmentVariablesProvider,
         @inject(ILanguageServerOutputChannel) lsOutputChannel: ILanguageServerOutputChannel

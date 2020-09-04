@@ -23,7 +23,7 @@ import {
 } from '../types';
 
 @injectable()
-export class NodeLanguageServerManager implements ILanguageServerManager {
+export class JediLanguageServerManager implements ILanguageServerManager {
     private languageServerProxy?: ILanguageServerProxy;
     private resource!: Resource;
     private interpreter: PythonEnvironment | undefined;
@@ -37,8 +37,6 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         @inject(ILanguageServerAnalysisOptions)
         @named(LanguageServerType.Node)
         private readonly analysisOptions: ILanguageServerAnalysisOptions,
-        @inject(ILanguageServerFolderService)
-        private readonly folderService: ILanguageServerFolderService,
         @inject(IExperimentsManager) private readonly experimentsManager: IExperimentsManager,
         @inject(IConfigurationService) private readonly configService: IConfigurationService,
         @inject(ICommandManager) commandManager: ICommandManager
@@ -50,7 +48,7 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         );
     }
 
-    private static versionTelemetryProps(instance: NodeLanguageServerManager) {
+    private static versionTelemetryProps(instance: JediLanguageServerManager) {
         return {
             lsVersion: instance.lsVersion
         };
@@ -76,8 +74,10 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         this.interpreter = interpreter;
         this.analysisOptions.onDidChange(this.restartLanguageServerDebounced, this, this.disposables);
 
-        const versionPair = await this.folderService.getCurrentLanguageServerDirectory();
-        this.lsVersion = versionPair?.version.format();
+        // Version is actually hardcoded in our requirements.txt
+        // tslint:disable-next-line: no-require-imports
+        const requirements = require('../../../../requirements.txt');
+        this.lsVersion = requirements;
 
         await this.analysisOptions.initialize(resource, interpreter);
         await this.startLanguageServer();
@@ -112,7 +112,7 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         undefined,
         true,
         undefined,
-        NodeLanguageServerManager.versionTelemetryProps
+        JediLanguageServerManager.versionTelemetryProps
     )
     @traceDecorators.verbose('Starting language server')
     protected async startLanguageServer(): Promise<void> {

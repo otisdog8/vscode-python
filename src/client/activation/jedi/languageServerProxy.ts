@@ -26,7 +26,7 @@ import { ILanguageClientFactory, ILanguageServerFolderService, ILanguageServerPr
 import { FileBasedCancellationStrategy } from './cancellationUtils';
 
 @injectable()
-export class NodeLanguageServerProxy implements ILanguageServerProxy {
+export class JediLanguageServerProxy implements ILanguageServerProxy {
     public languageClient: LanguageClient | undefined;
     private startupCompleted: Deferred<void>;
     private cancellationStrategy: FileBasedCancellationStrategy | undefined;
@@ -45,7 +45,7 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
         this.startupCompleted = createDeferred<void>();
     }
 
-    private static versionTelemetryProps(instance: NodeLanguageServerProxy) {
+    private static versionTelemetryProps(instance: JediLanguageServerProxy) {
         return {
             lsVersion: instance.lsVersion
         };
@@ -79,7 +79,7 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
         undefined,
         true,
         undefined,
-        NodeLanguageServerProxy.versionTelemetryProps
+        JediLanguageServerProxy.versionTelemetryProps
     )
     public async start(
         resource: Resource,
@@ -143,7 +143,7 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
         undefined,
         true,
         undefined,
-        NodeLanguageServerProxy.versionTelemetryProps
+        JediLanguageServerProxy.versionTelemetryProps
     )
     protected async serverReady(): Promise<void> {
         while (this.languageClient && !this.languageClient.initializeResult) {
@@ -155,7 +155,7 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
         this.startupCompleted.resolve();
     }
 
-    @swallowExceptions('Activating Unit Tests Manager for Pylance language server')
+    @swallowExceptions('Activating Unit Tests Manager for Jedi language server')
     protected async registerTestServices() {
         if (!this.languageClient) {
             throw new Error('languageClient not initialized');

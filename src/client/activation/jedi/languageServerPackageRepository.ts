@@ -13,7 +13,7 @@ import {
 } from '../common/packageRepository';
 
 @injectable()
-export class StableNodeLanguageServerPackageRepository extends StableLanguageServerPackageRepository {
+export class StableJediLanguageServerPackageRepository extends StableLanguageServerPackageRepository {
     constructor(@inject(IServiceContainer) serviceContainer: IServiceContainer) {
         const config = serviceContainer.get<IWorkspaceService>(IWorkspaceService).getConfiguration('python');
         const packageName = config.get<string>('blobName') || '';
@@ -22,7 +22,7 @@ export class StableNodeLanguageServerPackageRepository extends StableLanguageSer
 }
 
 @injectable()
-export class BetaNodeLanguageServerPackageRepository extends BetaLanguageServerPackageRepository {
+export class BetaJediLanguageServerPackageRepository extends BetaLanguageServerPackageRepository {
     constructor(@inject(IServiceContainer) serviceContainer: IServiceContainer) {
         const config = serviceContainer.get<IWorkspaceService>(IWorkspaceService).getConfiguration('python');
         const packageName = config.get<string>('blobName') || '';
@@ -31,7 +31,7 @@ export class BetaNodeLanguageServerPackageRepository extends BetaLanguageServerP
 }
 
 @injectable()
-export class DailyNodeLanguageServerPackageRepository extends DailyLanguageServerPackageRepository {
+export class DailyJediLanguageServerPackageRepository extends DailyLanguageServerPackageRepository {
     constructor(@inject(IServiceContainer) serviceContainer: IServiceContainer) {
         const config = serviceContainer.get<IWorkspaceService>(IWorkspaceService).getConfiguration('python');
         const packageName = config.get<string>('blobName') || '';

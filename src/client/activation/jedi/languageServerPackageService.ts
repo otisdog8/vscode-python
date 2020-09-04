@@ -10,7 +10,7 @@ import { IServiceContainer } from '../../ioc/types';
 import { LanguageServerPackageService } from '../common/languageServerPackageService';
 
 @injectable()
-export class NodeLanguageServerPackageService extends LanguageServerPackageService {
+export class JediLanguageServerPackageService extends LanguageServerPackageService {
     constructor(
         @inject(IServiceContainer) serviceContainer: IServiceContainer,
         @inject(IApplicationEnvironment) appEnv: IApplicationEnvironment,

@@ -21,7 +21,6 @@ suite('Unit Tests - ManagementService', () => {
         let sandbox: sinon.SinonSandbox;
         let experiment: IExperimentsManager;
         let commandManager: ICommandManager;
-        let testManagementService: UnitTestManagementService;
         setup(() => {
             serviceContainer = mock(ServiceContainer);
             sandbox = sinon.createSandbox();
@@ -38,8 +37,6 @@ suite('Unit Tests - ManagementService', () => {
             when(serviceContainer.get<IExperimentsManager>(IExperimentsManager)).thenReturn(instance(experiment));
             when(serviceContainer.get<ICommandManager>(ICommandManager)).thenReturn(instance(commandManager));
             when(commandManager.executeCommand(anything(), anything(), anything())).thenResolve();
-
-            testManagementService = new UnitTestManagementService(instance(serviceContainer));
         });
         teardown(() => {
             sandbox.restore();
