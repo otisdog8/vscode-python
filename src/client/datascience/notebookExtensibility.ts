@@ -5,17 +5,11 @@ import { INotebookExtensibility } from './types';
 
 @injectable()
 export class NotebookExtensibility implements INotebookExtensibility {
-    private notebookOpened = new EventEmitter<void>();
-
     private kernelExecute = new EventEmitter<NotebookCell>();
 
     private kernelRestart = new EventEmitter<void>();
 
-    public get onNotebookOpened(): Event<void> {
-        return this.notebookOpened.event;
-    }
-
-    public get onKernelExecute(): Event<NotebookCell> {
+    public get onKernelPostExecute(): Event<NotebookCell> {
         return this.kernelExecute.event;
     }
 
@@ -27,11 +21,7 @@ export class NotebookExtensibility implements INotebookExtensibility {
         this.kernelRestart.fire();
     }
 
-    public fireKernelExecute(cell: NotebookCell): void {
+    public fireKernelPostExecute(cell: NotebookCell): void {
         this.kernelExecute.fire(cell);
-    }
-
-    public fireNotebookOpened(): void {
-        this.notebookOpened.fire();
     }
 }

@@ -598,12 +598,10 @@ export interface INotebookEditor extends Disposable {
 export const INotebookExtensibility = Symbol('INotebookExtensibility');
 
 export interface INotebookExtensibility {
-    readonly onNotebookOpened: Event<void>;
-    readonly onKernelExecute: Event<NotebookCell>;
+    readonly onKernelPostExecute: Event<NotebookCell>;
     readonly onKernelRestart: Event<void>;
     fireKernelRestart(): void;
-    fireKernelExecute(cell: NotebookCell): void;
-    fireNotebookOpened(): void;
+    fireKernelPostExecute(cell: NotebookCell): void;
 }
 
 export const IInteractiveWindowListener = Symbol('IInteractiveWindowListener');

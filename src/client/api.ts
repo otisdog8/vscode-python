@@ -52,7 +52,6 @@ export interface IExtensionApi {
          * An event that is emitted when execution details (for a resource) change. For instance, when interpreter configuration changes.
          */
         readonly onDidChangeExecutionDetails: Event<Uri | undefined>;
-        readonly onNotebookOpened: Event<void>;
         readonly onKernelExecute: Event<NotebookCell>;
         readonly onKernelRestart: Event<void>;
         /**
@@ -133,8 +132,7 @@ export function buildApi(
                 // If pythonPath equals an empty string, no interpreter is set.
                 return { execCommand: pythonPath === '' ? undefined : [pythonPath] };
             },
-            onNotebookOpened: notebookExtensibility.onNotebookOpened,
-            onKernelExecute: notebookExtensibility.onKernelExecute,
+            onKernelExecute: notebookExtensibility.onKernelPostExecute,
             onKernelRestart: notebookExtensibility.onKernelRestart
         },
         datascience: {

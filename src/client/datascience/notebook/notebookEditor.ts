@@ -97,7 +97,6 @@ export class NotebookEditor implements INotebookEditor {
             })
         );
         disposables.push(model.onDidDispose(this._closed.fire.bind(this._closed, this)));
-        this.nbExtensibility.fireNotebookOpened();
     }
     public async load(_storage: INotebookModel, _webViewPanel?: WebviewPanel): Promise<void> {
         // Not used.
@@ -170,7 +169,7 @@ export class NotebookEditor implements INotebookEditor {
     public notifyExecution(cell: NotebookCell) {
         this._executed.fire(this);
         this.executedCode.fire(cell.document.getText());
-        this.nbExtensibility.fireKernelExecute(cell);
+        this.nbExtensibility.fireKernelPostExecute(cell);
     }
     public async interruptKernel(): Promise<void> {
         if (this.restartingKernel) {
