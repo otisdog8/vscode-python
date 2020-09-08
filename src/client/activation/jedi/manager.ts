@@ -74,10 +74,9 @@ export class JediLanguageServerManager implements ILanguageServerManager {
         this.interpreter = interpreter;
         this.analysisOptions.onDidChange(this.restartLanguageServerDebounced, this, this.disposables);
 
-        // Version is actually hardcoded in our requirements.txt
-        // tslint:disable-next-line: no-require-imports
-        const requirements = require('../../../../requirements.txt');
-        this.lsVersion = requirements;
+        // Version is actually hardcoded in our requirements.txt.
+        // TODO: Figure out how to read this without starting the language server
+        this.lsVersion = '0.19.3';
 
         await this.analysisOptions.initialize(resource, interpreter);
         await this.startLanguageServer();

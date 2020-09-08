@@ -23,23 +23,14 @@ export class JediLanguageClientFactory implements ILanguageClientFactory {
         _interpreter: PythonEnvironment | undefined,
         clientOptions: LanguageClientOptions
     ): Promise<LanguageClient> {
-        const jediServerModulePath = path.join(EXTENSION_ROOT_DIR, 'pythonFiles', 'lib', 'jedi_language_server');
+        // Just run the language server using a module
+        const jediServerModulePath = path.join(EXTENSION_ROOT_DIR, 'pythonFiles', 'runJediLanguageServer.py');
         const interpreter = await this.interpreterService.getActiveInterpreter(resource);
         const pythonPath = interpreter ? interpreter.path : 'python';
-        const args = ['-m', `"${jediServerModulePath}"`];
-
-        // If the extension is launched in debug mode, then the debug server options are used.
+        const args = [`${jediServerModulePath}`];
         const serverOptions: ServerOptions = {
-            run: {
-                module: pythonPath,
-                transport: TransportKind.ipc,
-                args
-            },
-            debug: {
-                module: pythonPath,
-                transport: TransportKind.ipc,
-                args
-            }
+            command: pythonPath,
+            args
         };
 
         const vscodeLanguageClient = require('vscode-languageclient/node') as typeof import('vscode-languageclient/node');

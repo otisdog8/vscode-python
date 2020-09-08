@@ -38,7 +38,6 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         @inject(ILanguageClientFactory) private readonly factory: ILanguageClientFactory,
         @inject(ITestManagementService) private readonly testManager: ITestManagementService,
         @inject(IConfigurationService) private readonly configurationService: IConfigurationService,
-        @inject(ILanguageServerFolderService) private readonly folderService: ILanguageServerFolderService,
         @inject(IExperimentsManager) private readonly experiments: IExperimentsManager,
         @inject(IInterpreterPathService) private readonly interpreterPathService: IInterpreterPathService
     ) {
@@ -87,8 +86,8 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         options: LanguageClientOptions
     ): Promise<void> {
         if (!this.languageClient) {
-            const directory = await this.folderService.getCurrentLanguageServerDirectory();
-            this.lsVersion = directory?.version.format();
+            // TODO: Read this from the language server install
+            this.lsVersion = '0.19.3';
 
             this.cancellationStrategy = new FileBasedCancellationStrategy();
             options.connectionOptions = { cancellationStrategy: this.cancellationStrategy };
