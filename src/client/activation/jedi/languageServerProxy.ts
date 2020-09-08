@@ -22,7 +22,7 @@ import { captureTelemetry, sendTelemetryEvent } from '../../telemetry';
 import { EventName } from '../../telemetry/constants';
 import { ITestManagementService } from '../../testing/types';
 import { ProgressReporting } from '../progress';
-import { ILanguageClientFactory, ILanguageServerFolderService, ILanguageServerProxy } from '../types';
+import { ILanguageClientFactory, ILanguageServerProxy } from '../types';
 import { FileBasedCancellationStrategy } from './cancellationUtils';
 
 @injectable()

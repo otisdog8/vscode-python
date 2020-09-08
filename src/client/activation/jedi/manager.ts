@@ -16,7 +16,6 @@ import { Commands } from '../commands';
 import { LanguageClientMiddleware } from '../languageClientMiddleware';
 import {
     ILanguageServerAnalysisOptions,
-    ILanguageServerFolderService,
     ILanguageServerManager,
     ILanguageServerProxy,
     LanguageServerType
@@ -35,7 +34,7 @@ export class JediLanguageServerManager implements ILanguageServerManager {
     constructor(
         @inject(IServiceContainer) private readonly serviceContainer: IServiceContainer,
         @inject(ILanguageServerAnalysisOptions)
-        @named(LanguageServerType.Node)
+        @named(LanguageServerType.Jedi)
         private readonly analysisOptions: ILanguageServerAnalysisOptions,
         @inject(IExperimentsManager) private readonly experimentsManager: IExperimentsManager,
         @inject(IConfigurationService) private readonly configService: IConfigurationService,
@@ -121,7 +120,7 @@ export class JediLanguageServerManager implements ILanguageServerManager {
         options.middleware = this.middleware = new LanguageClientMiddleware(
             this.experimentsManager,
             this.configService,
-            LanguageServerType.Node,
+            LanguageServerType.Jedi,
             this.lsVersion
         );
 
