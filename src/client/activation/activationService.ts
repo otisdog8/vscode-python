@@ -48,6 +48,7 @@ const workspacePathNameForGlobalWorkspaces = '';
 interface IActivatedServer {
     key: string;
     server: ILanguageServerActivator;
+    jedi: boolean;
 }
 
 @injectable()
@@ -111,7 +112,7 @@ export class LanguageServerExtensionActivationService
         }
 
         // Save our active server.
-        this.activatedServer = { key, server: result };
+        this.activatedServer = { key, server: result, jedi: result.type === LanguageServerType.Jedi };
 
         // Force this server to reconnect (if disconnected) as it should be the active
         // language server for all of VS code.
@@ -183,6 +184,7 @@ export class LanguageServerExtensionActivationService
             settings.workspaceFolderValue === undefined
         );
     }
+
     protected async onWorkspaceFoldersChanged() {
         //If an activated workspace folder was removed, dispose its activator
         const workspaceKeys = await Promise.all(

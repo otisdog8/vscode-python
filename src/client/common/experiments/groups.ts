@@ -98,3 +98,8 @@ export enum SurveyAndInterpreterTipNotification {
     tipExperiment = 'pythonTipPromptWording',
     surveyExperiment = 'pythonMailingListPromptWording'
 }
+
+// Experiment to switch Jedi to use an LSP instead of direct providers
+export enum JediLSP {
+    experiment = 'JediLSP'
+}

@@ -30,6 +30,7 @@ import { KernelDaemonPool } from '../../client/datascience/kernel-launcher/kerne
 import { promisify } from 'util';
 import { LanguageServerExtensionActivationService } from '../../client/activation/activationService';
 import { LanguageServerDownloader } from '../../client/activation/common/downloader';
+import { JediExtensionActivator } from '../../client/activation/jedi';
 import { DotNetLanguageServerActivator } from '../../client/activation/languageServer/activator';
 import { LanguageServerCompatibilityService } from '../../client/activation/languageServer/languageServerCompatibilityService';
 import { LanguageServerExtension } from '../../client/activation/languageServer/languageServerExtension';
@@ -761,6 +762,11 @@ export class DataScienceIocContainer extends UnitTestIocContainer {
         );
         this.serviceManager.addSingleton<ILanguageServerExtension>(ILanguageServerExtension, LanguageServerExtension);
 
+        this.serviceManager.add<ILanguageServerActivator>(
+            ILanguageServerActivator,
+            JediExtensionActivator,
+            LanguageServerType.Jedi
+        );
         this.serviceManager.addSingleton<ILanguageServerAnalysisOptions>(
             ILanguageServerAnalysisOptions,
             MockLanguageServerAnalysisOptions
