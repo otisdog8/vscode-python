@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import '../../common/extensions';
 
 import { inject, injectable, named } from 'inversify';
@@ -8,6 +10,7 @@ import { ICommandManager } from '../../common/application/types';
 import { traceDecorators } from '../../common/logger';
 import { IConfigurationService, IDisposable, IExperimentsManager, Resource } from '../../common/types';
 import { debounceSync } from '../../common/utils/decorators';
+import { EXTENSION_ROOT_DIR } from '../../constants';
 import { IServiceContainer } from '../../ioc/types';
 import { PythonEnvironment } from '../../pythonEnvironments/info';
 import { captureTelemetry } from '../../telemetry';
@@ -74,8 +77,15 @@ export class JediLanguageServerManager implements ILanguageServerManager {
         this.analysisOptions.onDidChange(this.restartLanguageServerDebounced, this, this.disposables);
 
         // Version is actually hardcoded in our requirements.txt.
-        // TODO: Figure out how to read this without starting the language server
-        this.lsVersion = '0.19.3';
+        const requirementsTxt = await fs.readFile(path.join(EXTENSION_ROOT_DIR, 'requirements.txt'), 'utf-8');
+
+        // Search using a regex in the text
+        const match = /jedi-language-server==([0-9\.]*)/.exec(requirementsTxt);
+        if (match && match.length > 1) {
+            this.lsVersion = match[1];
+        } else {
+            this.lsVersion = '0.19.3';
+        }
 
         await this.analysisOptions.initialize(resource, interpreter);
         await this.startLanguageServer();

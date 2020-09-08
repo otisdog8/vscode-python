@@ -21,6 +21,7 @@ import { PythonEnvironment } from '../../pythonEnvironments/info';
 import { captureTelemetry, sendTelemetryEvent } from '../../telemetry';
 import { EventName } from '../../telemetry/constants';
 import { ITestManagementService } from '../../testing/types';
+import { LanguageClientMiddleware } from '../languageClientMiddleware';
 import { ProgressReporting } from '../progress';
 import { ILanguageClientFactory, ILanguageServerProxy } from '../types';
 import { FileBasedCancellationStrategy } from './cancellationUtils';
@@ -86,8 +87,9 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         options: LanguageClientOptions
     ): Promise<void> {
         if (!this.languageClient) {
-            // TODO: Read this from the language server install
-            this.lsVersion = '0.19.3';
+            this.lsVersion =
+                (options.middleware ? (<LanguageClientMiddleware>options.middleware).serverVersion : undefined) ??
+                '0.19.3';
 
             this.cancellationStrategy = new FileBasedCancellationStrategy();
             options.connectionOptions = { cancellationStrategy: this.cancellationStrategy };
