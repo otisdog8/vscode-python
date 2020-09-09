@@ -2108,11 +2108,12 @@
                             "DeprecatePythonPath - experiment",
                             "RunByLine - experiment",
                             "tryPylance",
+                            "JediLSP",
                             "All"
                         ]
                     },
                     "description": "List of experiment to opt into. If empty, user is assigned the default experiment groups. See https://github.com/microsoft/vscode-python/wiki/Experiments for more details.",
-                    "scope": "machine"
+                    "scope": "resource"
                 },
                 "python.experiments.optOutFrom": {
                     "type": "array",
@@ -2132,11 +2133,12 @@
                             "DeprecatePythonPath - experiment",
                             "RunByLine - experiment",
                             "tryPylance",
+                            "JediLSP",
                             "All"
                         ]
                     },
                     "description": "List of experiment to opt out of. If empty, user is assigned the default experiment groups. See https://github.com/microsoft/vscode-python/wiki/Experiments for more details.",
-                    "scope": "machine"
+                    "scope": "resource"
                 },
                 "python.dataScience.allowImportFromNotebook": {
                     "type": "boolean",
